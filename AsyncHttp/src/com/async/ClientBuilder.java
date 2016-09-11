@@ -1,11 +1,12 @@
 package com.async;
 
-import com.async.Interceptor.RequestInterceptorActionInterface;
-import com.async.Interceptor.ResponseInterceptorActionInterface;
+import com.async.Interceptor2.RequestInterceptorActionInterface;
+import com.async.Interceptor2.ResponseInterceptorActionInterface;
 
+ 
 public class ClientBuilder {
 
-	private MHttpClient mHttpClient;
+	private AsyncHttp mHttpClient;
 
 	static ClientBuilder clientBuilder;
 
@@ -13,12 +14,12 @@ public class ClientBuilder {
 		if (clientBuilder == null) {
 			clientBuilder = new ClientBuilder();
 		}
-		mHttpClient = new MHttpClient();
+		mHttpClient = new AsyncHttp();
 		return clientBuilder;
 	}
 
-	public ClientBuilder addRequestInterceptor(
-			RequestInterceptorActionInterface requestInterceptor) {
+	public  ClientBuilder addRequestInterceptor(
+			RequestInterceptorActionInterface  requestInterceptor) {
 		mHttpClient.addRequestInterceptor(requestInterceptor);
 		return clientBuilder;
 	}

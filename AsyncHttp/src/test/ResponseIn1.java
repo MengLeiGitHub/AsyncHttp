@@ -1,21 +1,24 @@
 package test;
 
 
-import com.async.Interceptor.ResponseInterceptorActionInterface;
-import com.async.builder.ResponseBuilder;
+import com.async.Interceptor2.ResponseInterceptorActionInterface;
+
+ import com.async.entity.ResponseBody;
 
 
-public class ResponseIn1  implements ResponseInterceptorActionInterface {
+public   class ResponseIn1  implements ResponseInterceptorActionInterface<ResponseBody> {
+
+	public ResponseBody  interceptorAction(ResponseBody  t) throws Exception {
+		// TODO Auto-generated method stub
+	
+		//System.out.println(this.getClass().getSimpleName()+"   ResponseIn1 1111111 ");
+
+		
+		return t;
+	}
  
 	
- 	public ResponseBuilder interceptorAction(ResponseBuilder builder)
-			throws Exception {
-		// TODO Auto-generated method stub
-		System.out.println(this.getClass().getSimpleName()+"   interceptorAction  "+builder.response().getResult());
-		
-		
-		return  builder;
-	}
+ 	 
 	
 	
 

@@ -1,20 +1,20 @@
 package test;
 
 
-import com.async.Interceptor.RequestInterceptorActionInterface;
-import com.async.builder.RequestBuilder;
+ import com.async.Interceptor2.RequestInterceptorActionInterface;
+import com.async.request2.BaseHttpRequest;
 
 
 public class RequestIn1  implements  RequestInterceptorActionInterface{
 
- 	public RequestBuilder interceptorAction(RequestBuilder builder)
+	public <T> BaseHttpRequest<T> interceptorAction(BaseHttpRequest<T> baserequest )
 			throws Exception {
 		// TODO Auto-generated method stub
 	
-		System.out.println(this.getClass().getSimpleName()+"   interceptorAction  "+builder.getConenctionParams());
+		//System.out.println(this.getClass().getSimpleName()+"   interceptorAction  11111111111" );
 
 		
-		return builder;
+		return baserequest;
 	}
 	
 }

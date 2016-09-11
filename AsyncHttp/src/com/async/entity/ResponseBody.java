@@ -1,15 +1,17 @@
 package com.async.entity;
 
+import com.async.exception.HttpException;
+import com.async.request2.BaseHttpRequest;
+
 public class ResponseBody<T> {
 	
-	private  Throwable throwable;
+	private  HttpException exception;
 	private  T  result;
-	public Throwable getThrowable() {
-		return throwable;
-	}
-	public void setThrowable(Throwable throwable) {
-		this.throwable = throwable;
-	}
+    private	 BaseHttpRequest<T>  requestParam;
+	private  long contentLength;
+	private  long requestParamLength;
+    private  int  index;
+     
 	public T getResult() {
 		return result;
 	}
@@ -17,8 +19,37 @@ public class ResponseBody<T> {
 		this.result = result;
 		return this;
 	}
-	
-	
+	 
+	public BaseHttpRequest<T> getRequestParam() {
+		return requestParam;
+	}
+	public void setRequestParam(BaseHttpRequest<T> requestParam) {
+		this.requestParam = requestParam;
+	}
+	public HttpException getException() {
+		return exception;
+	}
+	public void setException(HttpException exception) {
+		this.exception = exception;
+	}
+	public long getContentLength() {
+		return contentLength;
+	}
+	public void setContentLength(long contentLength) {
+		this.contentLength = contentLength;
+	}
+	public long getRequestParamLength() {
+		return requestParamLength;
+	}
+	public void setRequestParamLength(long requestParamLength) {
+		this.requestParamLength = requestParamLength;
+	}
+	public void setIndex(int index) {
+		this.index = index;
+	}
+	public int getIndex() {
+		return index;
+	}
 	
 
 }

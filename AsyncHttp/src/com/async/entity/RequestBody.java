@@ -1,6 +1,5 @@
 package com.async.entity;
 
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
@@ -10,6 +9,7 @@ public class RequestBody {
 	
 	public RequestBody(){
  		if(table==null)table=new Hashtable<String, Object>();
+ 		
 	}
 	
 	
