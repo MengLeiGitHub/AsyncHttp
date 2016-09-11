@@ -1,8 +1,6 @@
 package com.async.Interceptor2;
 
 
-import com.async.entity.RequestBody;
-import com.async.entity.ResponseBody;
 import com.async.request2.BaseHttpRequest;
 
 
