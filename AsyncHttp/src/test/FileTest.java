@@ -19,6 +19,8 @@ import com.async.handler.TaskHandler;
 import com.async.request2.FileRequest;
 import com.async.request2.RequestConfig;
 import com.async.request2.entity.Header;
+import com.async.utils.LogUtils;
+import com.async.utils.Utils;
 
 
  
@@ -27,6 +29,16 @@ import com.async.request2.entity.Header;
 public class FileTest  extends  DownProgrossCallback<ResponseBody<File>>{
 
 	static ArrayList<TaskHandler> tasklist=new ArrayList<TaskHandler>();
+	private  int e;
+	
+	public FileTest(int i) {
+		// TODO Auto-generated constructor stub
+		this.e=i;
+	}
+
+
+
+
 
 	public static void main(String[] string){
 		
@@ -52,7 +64,7 @@ public class FileTest  extends  DownProgrossCallback<ResponseBody<File>>{
           headerlist.add(new Header(Constents.CONTENT_TYPE, Constents.TYPE_FORM_DATA));
           requestConfig.setHeadList(headerlist);
           
-          
+          LogUtils.setDebug(false);
           AsyncHttp.instance().setConfig(requestConfig);
 
           
@@ -60,10 +72,13 @@ public class FileTest  extends  DownProgrossCallback<ResponseBody<File>>{
           
          String url="http://211.149.184.79:8080/we/car/getAllCarMessageForPage.do";
          
+         
          String[] u={
+        		 "http://img.wallpapersking.com/d7/2016-9/2016091206311.jpg",
         		 "http://scimg.jb51.net/allimg/160815/103-160Q509544OC.jpg"
-        		 ,"http://scimg.jb51.net/allimg/160813/103-160Q3143110P5.jpg"
-        		 ,"http://pic24.nipic.com/20121029/5056611_120019351000_2.jpg"
+        		 ,"http://scimg.jb51.net/allimg/160813/103-160Q3143110P5.jpg",
+         		 "http://pic24.nipic.com/20121029/5056611_120019351000_2.jpg",
+        		 "http://lensbuyersguide.com/gallery/219/2/23_iso100_14mm.jpg"
         		 ,"http://img.taopic.com/uploads/allimg/130711/318756-130G1222R317.jpg"
         		 ,"http://pic14.nipic.com/20110610/7181928_110502231129_2.jpg"
         		 ,"http://pic41.nipic.com/20140509/18696269_121755386187_2.png"
@@ -104,7 +119,7 @@ public class FileTest  extends  DownProgrossCallback<ResponseBody<File>>{
 
  			resReques.setRequestMethod(HttpMethod.Get);
   		  
- 			tasklist.add(AsyncHttp.instance().newRequest2(resReques, new FileTest()));
+ 			tasklist.add(AsyncHttp.instance().newRequest2(resReques, new FileTest(i)));
  			
   		
  			
@@ -116,6 +131,9 @@ public class FileTest  extends  DownProgrossCallback<ResponseBody<File>>{
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
+				
+				if(true)return;
+				
 				TaskHandler t=tasklist.get(tasklist.size()-2);
 				t.stop();
 				/*synchronized (t) {
@@ -140,7 +158,7 @@ public class FileTest  extends  DownProgrossCallback<ResponseBody<File>>{
 
 	 			resReques.setRequestMethod(HttpMethod.Get);
 	  		  
-	 			AsyncHttp.instance().newRequest2(resReques, new FileTest());
+	 			AsyncHttp.instance().newRequest2(resReques, new FileTest(0));
  				
 				
 			}
@@ -161,11 +179,7 @@ public class FileTest  extends  DownProgrossCallback<ResponseBody<File>>{
 		
 	}
 
-	public void finish() {
-		// TODO Auto-generated method stub
-		
-	}
-
+	 
 	 
 	public void fail(Exception e) {
 		// TODO Auto-generated method stub
@@ -175,11 +189,20 @@ public class FileTest  extends  DownProgrossCallback<ResponseBody<File>>{
 
 
 
+	@Override
 	public void start() {
 		// TODO Auto-generated method stub
-		
+		super.start();
+		System.out.println("任务   "+ e+"  startTime="+ Utils.getNowTime());
 	}
+	
+   @Override
+	public void finish() {
+		// TODO Auto-generated method stub
+		super.finish();
+		System.out.println("任务   "+ e+"  endTime="+ Utils.getNowTime());
 
+	}
 
 
 	public void success(ResponseBody<File> result) {
@@ -194,6 +217,7 @@ public class FileTest  extends  DownProgrossCallback<ResponseBody<File>>{
 	@Override
 	public void download_current(long current, long total) {
 		// TODO Auto-generated method stub
+		if(e==4)
 		System.out.println("long current ="+current+" long total="+total);
 
 	}

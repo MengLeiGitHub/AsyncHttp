@@ -14,6 +14,7 @@ public abstract class BaseDataConvert<T> {
 	public T convert(BaseHttpRequest<T> request,InputStream input,long len) throws IOException, HttpException {
 
 		this.data = read(request,input,len);
+		
 		input.close();
 
 		return this.data;

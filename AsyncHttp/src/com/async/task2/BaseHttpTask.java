@@ -65,7 +65,7 @@ public class BaseHttpTask extends TaskWork implements TaskHandler{
 
 	public synchronized  void stop() {
 		// TODO Auto-generated method stub
- 		 
+ 		 	if(httprequest!=null&&!httprequest.isCancledOrInterrupted())
  			httprequest.stop();
   	}
 
@@ -103,7 +103,9 @@ public class BaseHttpTask extends TaskWork implements TaskHandler{
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				// e.printStackTrace();
-				System.out.println("request"+httprequest.getIndex()+"============¥Ì¿≤");
+			//	System.out.println("request"+httprequest.getIndex()+"============¥Ì¿≤");
+			//	e.printStackTrace();
+				
 				if(responseBody==null)responseBody=new ResponseBody();
 				responseBody.setException(new HttpException(e) {
 				});

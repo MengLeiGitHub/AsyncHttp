@@ -97,7 +97,7 @@ public class StringTest  implements HttpCallBack<ResponseBody<String>>{
 		// TODO Auto-generated method stub
         System.out.println("message="+result);
 	}
-	public void fail(Exception e) {
+	public void fail(Exception e,ResponseBody<String> response) {
 		// TODO Auto-generated method stub
 		e.printStackTrace();
 	}

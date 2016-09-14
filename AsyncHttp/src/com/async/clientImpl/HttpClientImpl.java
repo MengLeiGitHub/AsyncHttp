@@ -7,13 +7,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import javax.net.ssl.HttpsURLConnection;
+
+import com.async.AsyncHttp;
 import com.async.AsyncHttpClient;
-import com.async.Log.Log;
 import com.async.constant.Constents;
 import com.async.entity.ResponseBody;
+import com.async.exception.HttpException;
 import com.async.request2.BaseHttpRequest;
+import com.async.request2.download;
 import com.async.request2.entity.Header;
 import com.async.request2.part.BaseParamPart;
+import com.async.utils.LogUtils;
 
 public class HttpClientImpl implements AsyncHttpClient {
 
@@ -36,23 +40,25 @@ public class HttpClientImpl implements AsyncHttpClient {
 			HttpURLConnection conn = (HttpURLConnection) realUrl
 					.openConnection();
 
-			conn.setReadTimeout(request.getSocketTimeout());	
-			
+			conn.setReadTimeout(request.getSocketTimeout());
+
 			conn.setConnectTimeout(request.getConnectTimeout());
-			
-			
+
 			// 1.设置网络请求的头部信息（方法参数，缓存，assaent ...）
 			ArrayList<Header> headlist = request.getHeaders();
-			
+
 			for (Header head : headlist) {
-				if (Constents.CONTENT_TYPE.equals(head.getKey())){
+				if (Constents.CONTENT_TYPE.equals(head.getKey())) {
 					conn.addRequestProperty(head.getKey(),
 							head.getVal() + Constents.BOUNDARY_PARAM
 									+ boundaryBuilder.getBoundary());
-				}
-				else {
+				} else {
 					conn.addRequestProperty(head.getKey(), head.getVal());
 				}
+				
+				LogUtils.e("key="+head.getKey() +"    val="+head.getVal());
+				
+				
 			}
 
 			// 2.判断是否有ssl，if（ishave）配置ssl
@@ -68,12 +74,14 @@ public class HttpClientImpl implements AsyncHttpClient {
 			}
 
 			conn.setRequestMethod(request.getRequestMethod().getMethodName());
-			System.out.println(request.getRequestMethod().getMethodName());
+			LogUtils.e(request.getRequestMethod().getMethodName());
 
 			// 发送POST请求必须设置如下两行
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
-
+			if(request instanceof download)
+			responseBody.setRecordEntity(((download) request).getRecordEntity());
+			
 			responseBody.setRequestParamLength(request.getTotalParamLength());
 
 			// 3.发送请求参数，（通过urlconnection outputStream 发送 数据 ）
@@ -81,15 +89,24 @@ public class HttpClientImpl implements AsyncHttpClient {
 			 * 1.可能会有很多数据类型，所以 有 list 数组 循环 output 2.BasePart<T> (chrild string
 			 * file 。。。。。。)
 			 */
-			
-			if(request.getRequestMethod()==HttpMethod.Post || request.getRequestMethod()==HttpMethod.Put ||request.getRequestMethod()==HttpMethod.Patch )
-			 {
-					outputStream = conn.getOutputStream();
+			request.getCallBack().start();
+			if (request.getRequestMethod() == HttpMethod.Post
+					|| request.getRequestMethod() == HttpMethod.Put
+					|| request.getRequestMethod() == HttpMethod.Patch) {
+				outputStream = conn.getOutputStream();
+				
+				write(outputStream, request);
 
-					write(outputStream, request);
-		
-					conn.getResponseCode();
-			 }
+				int code=conn.getResponseCode();
+ 				if(code>=300&&code<600){
+ 					HttpException httpException= new HttpException("hhh  Server returned HTTP response code: "+code+" for URL:"+request.getUrl()) {
+					};
+ 					responseBody.setException(httpException);
+ 					
+					throw httpException;
+ 				}
+				
+ 			}
 			// 4.设置response
 
 			responseBody.setContentLength(conn.getContentLengthLong());
@@ -100,6 +117,9 @@ public class HttpClientImpl implements AsyncHttpClient {
 			 * 
 			 */
 			inputStream = conn.getInputStream();
+			
+			AsyncHttp.instance().logResponseHead(conn);
+			
 			// BaseDataConvert<T> convert=request.getConvert();
 			// T result= convert.convert(request, inputStream ,
 			// conn.getContentLengthLong() );
@@ -111,7 +131,7 @@ public class HttpClientImpl implements AsyncHttpClient {
 			return responseBody;
 
 		} catch (Exception e) {
-
+			
 			throw e;
 
 		} finally {
@@ -127,6 +147,7 @@ public class HttpClientImpl implements AsyncHttpClient {
 				}
 
 			} catch (IOException e) {
+				
 				throw e;
 
 			}
@@ -144,7 +165,7 @@ public class HttpClientImpl implements AsyncHttpClient {
 			baseParamPart.setBoundaryBuilder(boundaryBuilder);
 			baseParamPart.createHead();
 
-			baseParamPart.write(out,req);
+			baseParamPart.write(out, req);
 		}
 		if (req.getParamParts() != null && req.getParamParts().size() != 0) {
 			out.write(boundaryBuilder.getEnd_tag().getBytes());
@@ -159,12 +180,8 @@ public class HttpClientImpl implements AsyncHttpClient {
 		// TODO Auto-generated method stub
 
 		// BaseHttpRequest<T> request,InputStream input,long len,String charset
+		
 		return request.getConvert().convert(request, input, len);
 	}
 
-	
-	
-	
-	
-	
 }

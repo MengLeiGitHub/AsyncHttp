@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import com.async.entity.ResponseBody;
 import com.async.request2.BaseHttpRequest;
 
+
 public interface AsyncHttpClient {
  	
 	public void  write(OutputStream out,BaseHttpRequest<?> req)throws Exception;

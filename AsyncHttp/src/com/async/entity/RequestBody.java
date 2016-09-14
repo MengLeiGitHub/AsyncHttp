@@ -5,27 +5,25 @@ import java.util.Set;
 
 public class RequestBody {
 
- 	private  Hashtable table;
-	
-	public RequestBody(){
- 		if(table==null)table=new Hashtable<String, Object>();
- 		
+	private Hashtable table;
+
+	public RequestBody() {
+		if (table == null)
+			table = new Hashtable<String, Object>();
+
 	}
-	
-	
-	
-	public final void  addParam(String key,String param){
+
+	public final void addParam(String key, String param) {
 		table.put(key, param);
-		
+
 	}
-	
-	
-	public final  Object queryParamByKey(String key){
+
+	public final Object queryParamByKey(String key) {
 		return table.get(key);
 	}
-	
-	public  final Set  getParamKeys(){
+
+	public final Set getParamKeys() {
 		return table.entrySet();
 	}
-	
+
 }
