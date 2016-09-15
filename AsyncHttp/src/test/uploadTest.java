@@ -6,19 +6,18 @@ package test;
 import java.io.File;
 import java.util.ArrayList;
 
-import com.async.AsyncHttp;
-import com.async.AsyncHttp;
-import com.async.callback.HttpCallBack;
-import com.async.callback.UploadProgrossCallback;
-import com.async.clientImpl.HttpMethod;
-import com.async.constant.Charsets;
-import com.async.constant.Constents;
-import com.async.entity.ResponseBody;
-import com.async.request2.RequestConfig;
-import com.async.request2.StringRequest;
-import com.async.request2.entity.Header;
-import com.async.request2.part.FileParamPart;
-import com.async.request2.part.StringParamPart;
+import com.async.http.AsyncHttp;
+import com.async.http.callback.HttpCallBack;
+import com.async.http.callback.UploadProgrossCallback;
+import com.async.http.clientImpl.HttpMethod;
+import com.async.http.constant.Charsets;
+import com.async.http.constant.Constents;
+import com.async.http.entity.ResponseBody;
+import com.async.http.request2.RequestConfig;
+import com.async.http.request2.StringRequest;
+import com.async.http.request2.entity.Header;
+import com.async.http.request2.part.FileParamPart;
+import com.async.http.request2.part.StringParamPart;
 
 
  

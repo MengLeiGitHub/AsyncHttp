@@ -8,19 +8,18 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.async.AsyncHttp;
-import com.async.AsyncHttp;
-import com.async.callback.DownProgrossCallback;
-import com.async.callback.HttpCallBack;
-import com.async.clientImpl.HttpMethod;
-import com.async.constant.Constents;
-import com.async.entity.ResponseBody;
-import com.async.handler.TaskHandler;
-import com.async.request2.FileRequest;
-import com.async.request2.RequestConfig;
-import com.async.request2.entity.Header;
-import com.async.utils.LogUtils;
-import com.async.utils.Utils;
+import com.async.http.AsyncHttp;
+import com.async.http.callback.DownProgrossCallback;
+import com.async.http.callback.HttpCallBack;
+import com.async.http.clientImpl.HttpMethod;
+import com.async.http.constant.Constents;
+import com.async.http.entity.ResponseBody;
+import com.async.http.handler.TaskHandler;
+import com.async.http.request2.FileRequest;
+import com.async.http.request2.RequestConfig;
+import com.async.http.request2.entity.Header;
+import com.async.http.utils.LogUtils;
+import com.async.http.utils.Utils;
 
 
  
@@ -74,20 +73,25 @@ public class FileTest  extends  DownProgrossCallback<ResponseBody<File>>{
          
          
          String[] u={
-        		 "http://img.wallpapersking.com/d7/2016-9/2016091206311.jpg",
+        		 
+        		/* "http://img.wallpapersking.com/d7/2016-9/2016091206311.jpg",
         		 "http://scimg.jb51.net/allimg/160815/103-160Q509544OC.jpg"
         		 ,"http://scimg.jb51.net/allimg/160813/103-160Q3143110P5.jpg",
-         		 "http://pic24.nipic.com/20121029/5056611_120019351000_2.jpg",
-        		 "http://lensbuyersguide.com/gallery/219/2/23_iso100_14mm.jpg"
+         		 "http://pic24.nipic.com/20121029/5056611_120019351000_2.jpg"
         		 ,"http://img.taopic.com/uploads/allimg/130711/318756-130G1222R317.jpg"
         		 ,"http://pic14.nipic.com/20110610/7181928_110502231129_2.jpg"
         		 ,"http://pic41.nipic.com/20140509/18696269_121755386187_2.png"
         		 ,"http://pic55.nipic.com/file/20141208/19462408_171130083000_2.jpg"
-        		 ,"http://pica.nipic.com/2008-03-11/2008311112935830_2.gif"
+        	,	 "http://lensbuyersguide.com/gallery/219/2/23_iso100_14mm.jpg"
+         		 ,"http://pica.nipic.com/2008-03-11/2008311112935830_2.gif"
         		 ,"http://img.taopic.com/uploads/allimg/120423/107913-12042323220753.jpg"
-        		 ,"http://img5.imgtn.bdimg.com/it/u=484208524,194442631&amp;fm=21&amp;gp=0.jpg"
-
-        		 
+        		 ,"http://img5.imgtn.bdimg.com/it/u=484208524,194442631&amp;fm=21&amp;gp=0.jpg",
+        		 "http://pic51.nipic.com/file/20141022/19779658_171157758000_2.jpg",	
+        		 "http://pic51.nipic.com/file/20141027/11284670_094822707000_2.jpg",
+        		 "http://pic.4j4j.cn/upload/pic/20130815/31e652fe2d.jpg",
+        		 "http://pic7.nipic.com/20100609/5136651_124423001651_2.jpg",
+        		 "http://a.hiphotos.baidu.com/image/pic/item/e7cd7b899e510fb3dfed5079dd33c895d0430c63.jpg"*/
+        		 "http://192.168.1.130:8080/manager/img8.jpg"
          };
          
          
@@ -119,7 +123,7 @@ public class FileTest  extends  DownProgrossCallback<ResponseBody<File>>{
 
  			resReques.setRequestMethod(HttpMethod.Get);
   		  
- 			tasklist.add(AsyncHttp.instance().newRequest2(resReques, new FileTest(i)));
+ 			tasklist.add(AsyncHttp.instance().download(resReques, new FileTest(i)));
  			
   		
  			
@@ -180,8 +184,8 @@ public class FileTest  extends  DownProgrossCallback<ResponseBody<File>>{
 	}
 
 	 
-	 
-	public void fail(Exception e) {
+	 @Override
+	public void fail(Exception e,ResponseBody<File> responseBody) {
 		// TODO Auto-generated method stub
 		System.out.println("=======================================");
 		e.printStackTrace();
@@ -217,9 +221,9 @@ public class FileTest  extends  DownProgrossCallback<ResponseBody<File>>{
 	@Override
 	public void download_current(long current, long total) {
 		// TODO Auto-generated method stub
-		if(e==4)
-		System.out.println("long current ="+current+" long total="+total);
-
+	 	// if(e==0)
+ 			 System.out.println("e="+e+"  long current ="+current+" long total="+total);
+  
 	}
 
 	 

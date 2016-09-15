@@ -1,8 +1,8 @@
 package test;
 
 
-import com.async.Interceptor2.ResponseInterceptorActionInterface;
-import com.async.entity.ResponseBody;
+import com.async.http.Interceptor2.ResponseInterceptorActionInterface;
+import com.async.http.entity.ResponseBody;
 
 
 public class ResponseIn2   implements ResponseInterceptorActionInterface<ResponseBody>  {

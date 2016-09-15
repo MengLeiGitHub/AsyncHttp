@@ -1,8 +1,8 @@
 package test;
 
 
- import com.async.Interceptor2.RequestInterceptorActionInterface;
-import com.async.request2.BaseHttpRequest;
+ import com.async.http.Interceptor2.RequestInterceptorActionInterface;
+import com.async.http.request2.BaseHttpRequest;
 
 
 public class RequestIn1  implements  RequestInterceptorActionInterface{
