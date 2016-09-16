@@ -134,8 +134,24 @@
 
 		        //uploadTest是 继承了   UploadProgrossCallback<ResponseBody<T>>的 回掉接口，实现进度的监控，和结果的返回
 
-		(3) 普通网络请求
+		(3) 普通网络请求 （有优先级之分）
 
+			1.高优先级
+			
+			 String urls="http://211.149.184.79:8080/we/car/getAllCarMessageForPage.do";
+	        // url="https://www.baidu.com/s?wd=java%20%20connection%20%20header&rsv_spt=1&rsv_iqid=0xeedc5e52000538bb&issp=1&f=3&rsv_bp=1&rsv_idx=2&ie=utf-8&rqlang=cn&tn=80035161_1_dg&rsv_enter=0&oq=java%20future&rsv_t=d401YWWNzGRFKoYJLxl5GAPzWANQ6pWrQw3%2Bbe2Pc34RTlRwcrZNfN7924ZBbvsDtHsItQ&inputT=11349&rsv_pq=e202081a0010d865&rsv_sug3=237&rsv_sug1=137&rsv_sug7=100&prefixsug=java%20%20connection%20%20header&rsp=0&rsv_sug4=12270";
+	         
+	 		for(int i=0;i<100;i++){
+  	 			StringRequest resReques=new StringRequest(urls, Charsets.UTF_8);
+	 			resReques.addParam(new StringParamPart("page", "1"));
+	 			resReques.addParam(new StringParamPart("size", "2"));
+	 			resReques.addParam(new StringParamPart("index", "index"+1));
+	 			resReques.setRequestMethod(HttpMethod.Post);
+	 			AsyncHttp.instance().stringRequest(resReques, new StringTest());
+  	 		}
+			
+			2.低优先级
+			
 		   String url="http://211.149.184.79:8080/we/car/getAllCarMessageForPage.do";
        
           
@@ -147,6 +163,9 @@
  		
   		  
  			AsyncHttp.instance().newRequest2(resReques, new StringTest());
+			
+			
+			
 		// StringTest  	 实现接口 HttpCallBack<ResponseBody<T>>
 
 		

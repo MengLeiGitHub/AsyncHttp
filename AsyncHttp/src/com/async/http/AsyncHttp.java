@@ -34,6 +34,7 @@ import com.async.http.handler.TaskHandler;
 import com.async.http.request2.BaseHttpRequest;
 import com.async.http.request2.FileRequest;
 import com.async.http.request2.RequestConfig;
+import com.async.http.request2.StringRequest;
 import com.async.http.request2.download;
 import com.async.http.request2.entity.Header;
 import com.async.http.request2.record.RecordEntity;
@@ -44,7 +45,9 @@ import com.async.http.utils.DeleteDirectory;
 import com.async.http.utils.LogUtils;
 import com.async.http.utils.StringUtils;
 import com.async.pool.SyncPoolExecutor;
+import com.async.pool.ConstructionCenter.TaskPriority;
 import com.async.pool.ConstructionCenter.TaskWork;
+import com.sun.javafx.tk.Toolkit.Task;
 
 public class AsyncHttp {
 	RequestInterceptor2 requestInterceptor;
@@ -63,7 +66,7 @@ public class AsyncHttp {
 	}
 
 	public AsyncHttp() {
-		SyncPoolExecutor.newFixedThreadPool(2, 1, null).isDebug(false);
+		SyncPoolExecutor.newFixedThreadPool(4, 1, null).isDebug(false);
 
 	}
 
@@ -131,6 +134,8 @@ public class AsyncHttp {
 
 		defaultConfig(t);
 
+		task.setTaskPriority(t.getTaskPriority());
+		
 		// 提交请求
 		int mid = SyncPoolExecutor.execute(task, resultObsever);
 
@@ -139,6 +144,28 @@ public class AsyncHttp {
 		return task;
 	}
 
+	
+	 /**
+	  * StringRequest 请求
+	  * 
+	  * @param t
+	  * @param httpCallback
+	  * @return
+	  */
+	public <T> TaskHandler stringRequest(StringRequest t,
+			HttpCallBack<ResponseBody<String>> httpCallback) {
+		 
+		t.setTaskPriority(TaskPriority.HIGHEST.getValue());
+		
+ 		return newRequest2(t, httpCallback);
+	}
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * 创建 新的多线程下载
 	 * 
@@ -253,14 +280,18 @@ public class AsyncHttp {
 			downloadn.setRecordEntity(recordEntity);
 			t.getRecordEntity().setFilelength(contentlength1);
  			downloadn.setRequestMethod(HttpMethod.Get);
- 			String s="http://lensbuyersguide.com/gallery/219/2/23_iso100_14mm.jpg";
-;
+
+ 			if(t.getTaskPriority()!=0){
+ 				
+  			}else{
+ 				downloadn.setTaskPriority(TaskPriority.LOWEST.getValue());
+ 			}
  			
+  			
  			try {
 				RandomAccessFile randomAccessFile=new RandomAccessFile(recordEntity.getRecordPath(),"rw");
 				randomAccessFile.seek(0);
-				if(s.equals(recordEntity.getUrl()))
-					System.out.println("   start1="+recordEntity.getStartTag()+"  end1="+recordEntity.getEndTag());
+				
 				randomAccessFile.write(JSON.toJSONString(recordEntity).getBytes("utf-8"));
 				randomAccessFile.close();
 			} catch (Exception e) {
@@ -388,6 +419,12 @@ public class AsyncHttp {
 					+ recordEntity.getEndTag()));
 			downloadn.setRecordEntity(recordEntity);
 			t.setRecordEntity(recordEntity);
+			if(t.getTaskPriority()!=0){
+ 				downloadn.setTaskPriority(t.getTaskPriority());
+			}else{
+				downloadn.setTaskPriority(TaskPriority.LOWEST.getValue());
+			}
+			
 			taskhandlerlist.add(newRequest2(downloadn, d));
 		}
 		
@@ -542,10 +579,9 @@ public class AsyncHttp {
 		if (t instanceof download) {
 			RecordEntity recordEntity = ((download) t).getRecordEntity();
 			((download) t).addHead(new Header("RANGE", "bytes="
-					+ recordEntity.getCurrent() + "-"
+					+ (recordEntity.getCurrent()+recordEntity.getStartTag()) + "-"
 					+ recordEntity.getEndTag()));
 			newRequest2(t, httpCallback);
-
 		}
 
 	}
