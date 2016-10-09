@@ -2,6 +2,8 @@ package test;
 
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import com.alibaba.fastjson.JSON;
 import com.async.http.request2.record.RecordEntity;
@@ -40,12 +42,12 @@ public class nnn {
             long start= System.currentTimeMillis();
             File  file=   new File(filepath);
             
-             System.out.println(ss.lastIndexOf("/"));
+          ///   System.out.println(ss.lastIndexOf("/"));
 
             
             String re=file.getParent()+File.separator+ss.substring(ss.lastIndexOf("/"), ss.lastIndexOf("."));
             
-            System.out.println("ee="+new File(re).getParentFile().length());
+         //   System.out.println("ee="+new File(re).getParentFile().length());
             
             /*
                if(!new File(re).exists()){
@@ -73,11 +75,14 @@ public class nnn {
             
             
             
-            new nnn().test();
-            
-            
-
-        
+      //      new nnn().test();
+            long time1=System.currentTimeMillis();
+           
+            URL url = new URL("http://blog.csdn.net/lmj623565791/article/details/23272657");
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			long contentlength = con.getContentLength();
+			
+			 System.out.println(System.currentTimeMillis()-time1);
         }
         catch (Exception e)
         {e.printStackTrace();

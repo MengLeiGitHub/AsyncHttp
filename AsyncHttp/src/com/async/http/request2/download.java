@@ -22,6 +22,16 @@ public class download extends BaseHttpRequest<File> {
 	}
 
 	
+	public String getFilepath() {
+		return filepath;
+	}
+
+
+	public void setFilepath(String filepath) {
+		this.filepath = filepath;
+	}
+
+
 	public download(
 			HttpCallBack<ResponseBody<File>> httpLifeCycleInterface) {
 		super(httpLifeCycleInterface);

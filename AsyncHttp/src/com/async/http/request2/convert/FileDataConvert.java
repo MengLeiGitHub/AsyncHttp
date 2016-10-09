@@ -57,8 +57,8 @@ public class FileDataConvert extends BaseDataConvert<File> {
 				((DownProgrossCallback) call).download_current(length, len);
 
 		}
-		
-		}catch(Exception e){
+ 			out.close();
+ 		}catch(Exception e){
 			throw new HttpException(e.getMessage()) {
 			};
 		}finally{

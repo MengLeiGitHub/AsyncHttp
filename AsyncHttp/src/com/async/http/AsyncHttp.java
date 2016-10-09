@@ -135,37 +135,32 @@ public class AsyncHttp {
 		defaultConfig(t);
 
 		task.setTaskPriority(t.getTaskPriority());
-		
+
 		// 提交请求
 		int mid = SyncPoolExecutor.execute(task, resultObsever);
 
 		task.setCurrt(mid);
 
+		// long time1=System.currentTimeMillis();
+		// System.out.println("================== ======================time2="+time1);
 		return task;
 	}
 
-	
-	 /**
-	  * StringRequest 请求
-	  * 
-	  * @param t
-	  * @param httpCallback
-	  * @return
-	  */
+	/**
+	 * StringRequest 请求
+	 * 
+	 * @param t
+	 * @param httpCallback
+	 * @return
+	 */
 	public <T> TaskHandler stringRequest(StringRequest t,
 			HttpCallBack<ResponseBody<String>> httpCallback) {
-		 
+
 		t.setTaskPriority(TaskPriority.HIGHEST.getValue());
-		
- 		return newRequest2(t, httpCallback);
+
+		return newRequest2(t, httpCallback);
 	}
-	
-	
-	
-	
-	
-	
-	
+
 	/**
 	 * 创建 新的多线程下载
 	 * 
@@ -176,8 +171,14 @@ public class AsyncHttp {
 
 	public <T> TaskHandler download(final download t,
 			final DownProgrossCallback<ResponseBody<File>> httpCallback) {
-		String urlString = t.getRecordEntity().getUrl();
-		String filepath = t.getRecordEntity().getFilePath();
+		String urlString = t.getUrl();
+		if (StringUtils.isNull(urlString))
+			urlString = t.getRecordEntity().getUrl();
+
+		String filepath = t.getFilepath();
+		if (StringUtils.isNull(filepath))
+			filepath = t.getRecordEntity().getFilePath();
+
 		if (StringUtils.isNull(urlString)) {
 			httpCallback.fail(new HttpException("url can not be null") {
 			}, t.getResponse());
@@ -210,14 +211,12 @@ public class AsyncHttp {
 		File downloadFile = new File(filepath);
 		if (downloadFile.exists()) {
 
-			
 			String refile = t.getRecordEntity().getRecordPath();
 			File ref = new File(refile);
 			File refParent = ref.getParentFile();
-			
-			System.out.println("============================================================================="+t.getUrl());
+
 			if (refParent.length() == 0) {
-  				
+
 				if (downloadFile.length() == contentlength) {
 					httpCallback.start();
 					ResponseBody<File> result = new ResponseBody<File>();
@@ -227,24 +226,16 @@ public class AsyncHttp {
 					httpCallback.finish();
 					return null;
 				} else {
-					
-					
 
 				}
- 				
- 			} else {
+
+			} else {
 				// 表示 有 记录的数据
 				File[] files = refParent.listFiles();
 				t.getRecordEntity().setFilelength(contentlength);
 				return breakpointDownload(files, t, httpCallback);
 
 			}
-			
-			
-			
-			
-			
-			
 
 		}
 		final long contentlength1 = contentlength;
@@ -279,26 +270,27 @@ public class AsyncHttp {
 			downloadn.setTaskPriority(t.getTaskPriority());
 			downloadn.setRecordEntity(recordEntity);
 			t.getRecordEntity().setFilelength(contentlength1);
- 			downloadn.setRequestMethod(HttpMethod.Get);
+			downloadn.setRequestMethod(HttpMethod.Get);
 
- 			if(t.getTaskPriority()!=0){
- 				
-  			}else{
- 				downloadn.setTaskPriority(TaskPriority.LOWEST.getValue());
- 			}
- 			
-  			
- 			try {
-				RandomAccessFile randomAccessFile=new RandomAccessFile(recordEntity.getRecordPath(),"rw");
+			if (t.getTaskPriority() != 0) {
+
+			} else {
+				downloadn.setTaskPriority(TaskPriority.LOWEST.getValue());
+			}
+
+			try {
+				RandomAccessFile randomAccessFile = new RandomAccessFile(
+						recordEntity.getRecordPath(), "rw");
 				randomAccessFile.seek(0);
-				
-				randomAccessFile.write(JSON.toJSONString(recordEntity).getBytes("utf-8"));
+
+				randomAccessFile.write(JSON.toJSONString(recordEntity)
+						.getBytes("utf-8"));
 				randomAccessFile.close();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
- 			
+
 			downloadn.addHead(new Header("RANGE", "bytes=" + start1 + "-"
 					+ end1));
 			taskhandlerlist.add(newRequest2(downloadn, d));
@@ -343,14 +335,11 @@ public class AsyncHttp {
 			DownProgrossCallback<ResponseBody<File>> httpCallback) {
 		// TODO Auto-generated method stub
 
-		
-		
-		
-		ArrayList<RecordEntity> recordEntitylist=new ArrayList<RecordEntity>();
-		long  totalNODown=0;
-		long  total=t.getRecordEntity().getFilelength();
-		
-		//获取还有多少未下载的
+		ArrayList<RecordEntity> recordEntitylist = new ArrayList<RecordEntity>();
+		long totalNODown = 0;
+		long total = t.getRecordEntity().getFilelength();
+
+		// 获取还有多少未下载的
 		for (File file : files) {
 			InputStreamReader read = null;
 			BufferedReader fileReader = null;
@@ -362,22 +351,24 @@ public class AsyncHttp {
 				String re = fileReader.readLine();
 				RecordEntity recordEntity = JSON.parseObject(re,
 						RecordEntity.class);
-				
-				totalNODown+=(recordEntity.getEndTag()-recordEntity.getStartTag()-recordEntity.getCurrent()+1);//+1表示从最新下载的下一位开始
+
+				totalNODown += (recordEntity.getEndTag()
+						- recordEntity.getStartTag()
+						- recordEntity.getCurrent() + 1);// +1表示从最新下载的下一位开始
 				recordEntity.setTotalNum(files.length);
 				recordEntitylist.add(recordEntity);
- 				fileReader.close();
- 				read.close();
- 			} catch (Exception e) {
+				fileReader.close();
+				read.close();
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} finally {
 				try {
- 						if (fileReader == null) {
-							fileReader.close();
-						}
-						if (read == null) {
-							read.close();
+					if (fileReader == null) {
+						fileReader.close();
+					}
+					if (read == null) {
+						read.close();
 					}
 
 				} catch (IOException e) {
@@ -388,51 +379,39 @@ public class AsyncHttp {
 			}
 
 		}
-		
+
 		// 设置当前 总的下载完成的量 ，在初始化 callback时 赋值，
-		
-		t.getRecordEntity().setTotalDownloaded(total-totalNODown);
-		
-		
+
+		t.getRecordEntity().setTotalDownloaded(total - totalNODown);
+
 		DownProgrossCallback d = (DownProgrossCallback) getCallBack(t,
 				httpCallback);
 
 		final ArrayList<TaskHandler> taskhandlerlist = new ArrayList<TaskHandler>();
 
-		System.out.println("===========================================");
-		
-		
-		
-		
 		/*
 		 * 从新创建请求
 		 */
-		for(RecordEntity recordEntity :recordEntitylist){
+		for (RecordEntity recordEntity : recordEntitylist) {
 			download downloadn = new download(t.getUrl());
 
 			long currut = recordEntity.getStartTag()
 					+ recordEntity.getCurrent();
-			
+
 			downloadn.setRequestMethod(HttpMethod.Get);
-			// System.out.println("start1="+start1+"  ===== end1="+end1);
+
 			downloadn.addHead(new Header("RANGE", "bytes=" + currut + "-"
 					+ recordEntity.getEndTag()));
 			downloadn.setRecordEntity(recordEntity);
 			t.setRecordEntity(recordEntity);
-			if(t.getTaskPriority()!=0){
- 				downloadn.setTaskPriority(t.getTaskPriority());
-			}else{
+			if (t.getTaskPriority() != 0) {
+				downloadn.setTaskPriority(t.getTaskPriority());
+			} else {
 				downloadn.setTaskPriority(TaskPriority.LOWEST.getValue());
 			}
-			
+
 			taskhandlerlist.add(newRequest2(downloadn, d));
 		}
-		
-		
-		
-		
-		
-		
 
 		TaskHandler taskHandler = new TaskHandler() {
 
@@ -488,16 +467,13 @@ public class AsyncHttp {
 					.getRecordEntity();
 			DownProgrossCallback d = null;
 			d = new DownProgrossCallback<ResponseBody>() {
-				
+
 				/**
-				 * 1.新的请求时，因为 getTotalDownloaded 默认为0
-				 * 2.从本地记录文件上，读取已经下载量，用于更新进度条 
+				 * 1.新的请求时，因为 getTotalDownloaded 默认为0 2.从本地记录文件上，读取已经下载量，用于更新进度条
 				 */
-				AtomicLong atomic = new AtomicLong(recordEntity.getTotalDownloaded());
-				
-				
-				
-				
+				AtomicLong atomic = new AtomicLong(
+						recordEntity.getTotalDownloaded());
+
 				AtomicInteger taskNum = new AtomicInteger(0);
 
 				@Override
@@ -520,12 +496,11 @@ public class AsyncHttp {
 							+ "  re.getTotalNum()=" + re.getTotalNum());
 					System.out.println(atomic.get() == re.getFilelength()
 							&& taskNum.get() == re.getTotalNum());
-				
+
 					if (atomic.get() == re.getFilelength()
 							&& taskNum.get() == re.getTotalNum()) {
 						String refile = re.getRecordPath();
-						System.out.println(new File(refile)
-						.getParent());
+						System.out.println(new File(refile).getParent());
 						DeleteDirectory.deleteDir(new File(refile)
 								.getParentFile());
 						downProgrossCallback.success(result);
@@ -577,10 +552,11 @@ public class AsyncHttp {
 			return;
 
 		if (t instanceof download) {
+			System.out.println("====================retryDownload");
 			RecordEntity recordEntity = ((download) t).getRecordEntity();
 			((download) t).addHead(new Header("RANGE", "bytes="
-					+ (recordEntity.getCurrent()+recordEntity.getStartTag()) + "-"
-					+ recordEntity.getEndTag()));
+					+ (recordEntity.getCurrent() + recordEntity.getStartTag())
+					+ "-" + recordEntity.getEndTag()));
 			newRequest2(t, httpCallback);
 		}
 
@@ -600,11 +576,18 @@ public class AsyncHttp {
 		try {
 			URL url = new URL(fileRequest.getUrl());
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			// con.setConnectTimeout(500);
 			contentlength = con.getContentLength();
+			System.out.println("contentlength=" + contentlength);
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			System.out
+					.println("===========================\\\\\\\\===============================================");
+			httpCallback.fail(e, fileRequest.getResponse());
+			httpCallback.finish();
+			return null;
 		}
 
 		String path = fileRequest.getFilepath();
