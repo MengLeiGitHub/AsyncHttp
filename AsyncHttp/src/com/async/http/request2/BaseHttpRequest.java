@@ -12,20 +12,21 @@ import com.async.http.request2.convert.BaseDataConvert;
 import com.async.http.request2.entity.Header;
 import com.async.http.request2.part.BaseParamPart;
 import com.async.http.request2.part.FileParamPart;
+import com.async.http.request2.writer.BaseWriter;
 
 /**
- * requestÀ¹½Ø£¬ºÍ response À¹½Ø request ÇëÇó
- * 
+ * requestæ‹¦æˆªï¼Œå’Œ response æ‹¦æˆª request è¯·æ±‚
+ *
  * @author ML
  * @param <S>
- * 
+ *
  */
 
 public abstract class BaseHttpRequest<T> {
 
 	private  int taskPriority;
 
- 	private String url;
+	private String url;
 
 	private ArrayList<BaseParamPart> paramParts;
 
@@ -42,9 +43,9 @@ public abstract class BaseHttpRequest<T> {
 	private boolean isUseCaChe;
 
 	private boolean isRetry;
-	
-	
-	
+
+
+
 	/**
 	 * connect timeout
 	 */
@@ -55,19 +56,19 @@ public abstract class BaseHttpRequest<T> {
 	private int socketTimeout = 0;
 
 	/**
-	 * »ØµôÉúÃüÖÜÆÚ
+	 * å›æ‰ç”Ÿå‘½å‘¨æœŸ
 	 */
 	private HttpCallBack<ResponseBody<T>> httpLifeCycleInterface;
 
 	/**
-	 * ÇëÇó´¦ÀíÀ¹½ØÆ÷
-	 * 
+	 * è¯·æ±‚å¤„ç†æ‹¦æˆªå™¨
+	 *
 	 */
 	private RequestInterceptor2 requestInterceptor;
 
 	/**
-	 * 
-	 * Á´½Ó¹ÜÀí
+	 *
+	 * é“¾æ¥ç®¡ç†
 	 */
 
 	ManagerConnectionInterface managerConnectionInterface;
@@ -113,7 +114,10 @@ public abstract class BaseHttpRequest<T> {
 		return (S) this;
 	}
 
-	public abstract BaseDataConvert<T> getConvert();
+	public abstract  BaseDataConvert<T> getConvert();
+
+	public abstract  BaseWriter   getWriter();
+
 
 	public <S extends BaseHttpRequest<T>> S setConvert(
 			BaseDataConvert<T> convert) {

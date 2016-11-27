@@ -51,9 +51,9 @@ public class StringTest  implements HttpCallBack<ResponseBody<String>>{
           AsyncHttp.instance().setConfig(requestConfig);
           
           
-         String url="http://211.149.184.79:8080/we/car/getAllCarMessageForPage.do";
+         String url="http://www.apifree.net/mobile/13333333333.xml";
         // url="https://www.baidu.com/s?wd=java%20%20connection%20%20header&rsv_spt=1&rsv_iqid=0xeedc5e52000538bb&issp=1&f=3&rsv_bp=1&rsv_idx=2&ie=utf-8&rqlang=cn&tn=80035161_1_dg&rsv_enter=0&oq=java%20future&rsv_t=d401YWWNzGRFKoYJLxl5GAPzWANQ6pWrQw3%2Bbe2Pc34RTlRwcrZNfN7924ZBbvsDtHsItQ&inputT=11349&rsv_pq=e202081a0010d865&rsv_sug3=237&rsv_sug1=137&rsv_sug7=100&prefixsug=java%20%20connection%20%20header&rsp=0&rsv_sug4=12270";
-         url="http://www.sxsbcn.com/";
+       //  url="http://www.sxsbcn.com/";
          long time1=System.currentTimeMillis();
          System.out.println("================== ======================time1="+time1);
  		for(int i=0;i<1000;i++){

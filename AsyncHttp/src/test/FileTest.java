@@ -71,9 +71,9 @@ public class FileTest  extends  DownProgrossCallback<ResponseBody<File>>{
           LogUtils.setDebug(false);
           AsyncHttp.instance().setConfig(requestConfig);
 
+         new FileTest(0). downApk();
           
-          
-          
+          if(true)return;
          String url="http://211.149.184.79:8080/we/car/getAllCarMessageForPage.do";
          
          
@@ -173,9 +173,9 @@ public class FileTest  extends  DownProgrossCallback<ResponseBody<File>>{
 				}*/
 				
 				
-				String filepath="C:\\Users\\admin\\Pictures\\Camera Roll\\img"+10+".jpg";
+				String filepath="C:\\Users\\admin\\Pictures\\Camera Roll\\jiujiumiandan-user.apk";
 	 			
-	 			FileRequest resReques=new FileRequest("http://img1.mm131.com/pic/2631/4.jpg");
+	 			FileRequest resReques=new FileRequest("http://www.jiujiumiandan.cn/jiujiumiandan-user.apk");
 	 			
  	 			resReques.setFilepath(filepath);
 	 	 
@@ -197,7 +197,19 @@ public class FileTest  extends  DownProgrossCallback<ResponseBody<File>>{
 	
 	
  
+	 public  void  downApk(){
+		 String filepath="C:\\Users\\admin\\Pictures\\Camera Roll\\apic24088.jpg";
+			
+			FileRequest resReques=new FileRequest("http://pic1.sc.chinaz.com/files/pic/pic9/201611/apic24088.jpg");
+			
+			resReques.setFilepath(filepath);
 	 
+			resReques.addHead(new Header("user-agent", "AsyHttp/1.0 ml"));
+
+			resReques.setRequestMethod(HttpMethod.Get);
+		  
+			AsyncHttp.instance().newRequest2(resReques, new FileTest(0));
+	 }
 
 	public void stop() {
 		// TODO Auto-generated method stub
@@ -243,7 +255,10 @@ public class FileTest  extends  DownProgrossCallback<ResponseBody<File>>{
 	public void download_current(long current, long total) {
 		// TODO Auto-generated method stub
 	 	// if(e==0)
- 			 System.out.println("e="+e+"  long current ="+current+" long total="+total);
+		// TODO Auto-generated method stub
+				int progress=(int)(current*100f/total);
+				System.out.println("progress="+progress);
+ 		//	 System.out.println("e="+e+"  long current ="+current+" long total="+total);
   
 	}
 

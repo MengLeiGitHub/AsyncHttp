@@ -38,6 +38,9 @@ public class RequestConfig {
 	private  ArrayList<Header> headList;
 
 
+	private String   defaultConverCharset;
+
+
 	public HttpMethod getRequestMethod() {
 		return RequestMethod;
 	}
@@ -96,9 +99,13 @@ public class RequestConfig {
 	public void setHeadList(ArrayList<Header> headList) {
 		this.headList = headList;
 	}
-	
-	
-	
-	
-	
+
+
+	public String getDefaultConverCharset() {
+		return defaultConverCharset;
+	}
+
+	public void setDefaultConverCharset(String defaultConverCharset) {
+		this.defaultConverCharset = defaultConverCharset;
+	}
 }

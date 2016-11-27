@@ -7,7 +7,7 @@ public enum HttpMethod {
 	 */
 	Get("GET"),
 	/**
-	 * get http header only
+	 * get http header
 	 */
 	Head("HEAD"),
 	/**

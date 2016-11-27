@@ -1,12 +1,14 @@
 package com.async.http.request2;
 
-import java.io.File;
-
 import com.async.http.callback.HttpCallBack;
 import com.async.http.entity.ResponseBody;
 import com.async.http.request2.convert.BaseDataConvert;
 import com.async.http.request2.convert.FileDataConvert;
 import com.async.http.request2.record.RecordEntity;
+import com.async.http.request2.writer.BaseWriter;
+import com.async.http.request2.writer.OneByOneWriter;
+
+import java.io.File;
 
 public class FileRequest extends BaseHttpRequest<File> {
 	
@@ -43,7 +45,7 @@ public class FileRequest extends BaseHttpRequest<File> {
 	@Override
 	public BaseDataConvert<File> getConvert() {
 		// TODO Auto-generated method stub
-		return new FileDataConvert();
+		return new FileDataConvert();//数据解析
 	}
 	public RecordEntity getRecordEntity() {
 		return recordEntity;
@@ -52,5 +54,8 @@ public class FileRequest extends BaseHttpRequest<File> {
 		this.recordEntity = recordEntity;
 	}
 
-	 
+	@Override
+	public BaseWriter getWriter() {
+		return new OneByOneWriter(this);
+	}
 }

@@ -14,6 +14,7 @@ import com.async.http.constant.Charsets;
 import com.async.http.constant.Constents;
 import com.async.http.entity.ResponseBody;
 import com.async.http.handler.TaskHandler;
+import com.async.http.request2.FileRequest;
 import com.async.http.request2.RequestConfig;
 import com.async.http.request2.StringRequest;
 import com.async.http.request2.download;
@@ -57,6 +58,14 @@ public class RandomAccessFileTest extends
 		LogUtils.setDebug(false);
 
 		AsyncHttp.instance().setConfig(requestConfig);
+		
+		new RandomAccessFileTest().downApk();
+		
+		
+		
+		if(true)return;
+		
+		
 
 		String url = "http://211.149.184.79:8080/we/car/getAllCarMessageForPage.do";
 
@@ -249,6 +258,27 @@ public class RandomAccessFileTest extends
 
 	}
 
+	public  void  downApk(){
+		 String filepath="C:\\Users\\admin\\Pictures\\Camera Roll\\jiujiumiandan-user.apk";
+			String url="http://www.jiujiumiandan.cn/jiujiumiandan-user.apk";
+		 
+		 download s = new download(new RecordEntity(url, filepath));
+
+			s.setTaskPriority(TaskPriority.LOWEST.getValue());// 设置优先级
+			s.setUrl(url);
+			
+			/*FileRequest resReques=new FileRequest("http://www.jiujiumiandan.cn/jiujiumiandan-user.apk");
+			
+			resReques.setFilepath(filepath);
+	 */
+			s.addHead(new Header("user-agent", "AsyHttp/1.0 ml"));
+
+			s.setRequestMethod(HttpMethod.Get);
+		  
+			AsyncHttp.instance().newRequest2(s, new FileTest(0));
+	 }
+	
+	
 	public void stop() {
 		// TODO Auto-generated method stub
 

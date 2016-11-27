@@ -19,7 +19,7 @@
 ####如何接入？
  
  ```java
- compile 'com.ml.asynchttp:asynchttp:1.0.0'
+    compile 'com.ml.asynchttp:asynchttp-android:1.0.6'
  
  ```
 
@@ -29,59 +29,126 @@
 
 
  ```java
-      RequestConfig requestConfig=new RequestConfig();
-      requestConfig.setConnectTimeout(10000);
-      requestConfig.setSocketTimeout(30000);
-      requestConfig.setRequestMethod(HttpMethod.Post);
-      ArrayList<Header> headerlist=new ArrayList<Header>();
-      headerlist.add(new Header("connection", "Keep-Alive"));
-      headerlist.add(new Header("user-agent", "AsyncHttp 1.0"));
-      headerlist.add(new Header("Accept-Charset", "utf-8"));
-      headerlist.add(new Header(Constents.CONTENT_TYPE, Constents.TYPE_FORM_DATA));
-      requestConfig.setHeadList(headerlist);
+    
+        AsyncHttpUtils.init(new RequestInterceptorActionInterface() {
+            @Override
+            public <T> BaseHttpRequest<T> interceptorAction(BaseHttpRequest<T> baserequest) throws Exception {
+                TelephonyManager tm = (TelephonyManager) BaseApplication.getInstance().getSystemService(Context.TELEPHONY_SERVICE);
+              
 
-
-      AsyncHttp.instance().addRequestInterceptor(new RequestIn1())
-        .addRequestInterceptor(new RequestIn2())
-        .addResponseInterceptor(new ResponseIn1())
-        .addResponseInterceptor(new ResponseIn2()).setConfig(requestConfig);
+                return baserequest;
+            }
+        }, new  ResponseInterceptorActionInterface(){
+		);
+        LogUtils.setDebug(true);
  
  ```
 
-*  ResponseIn1是结果过滤器，可以自定义，只需要  实现  ResponseInterceptorActionInterface<ResponseBody> 接口
 
-*      RequestIn1 自定义请求处理拦截器，需要实现  RequestInterceptorActionInterface  接口
+*  参数1自定义请求处理拦截器，需要实现  RequestInterceptorActionInterface  接口
+*  参数2是结果过滤器，可以自定义，只需要  实现  ResponseInterceptorActionInterface<ResponseBody> 接口
+
 
  ######提示 ： 请求拦截器和过滤器可以在框架初始化添加，也可以在创建请求的时候，添加到请求中
  
  
  
- #####普通网络请求 （有优先级之分）
-   * 高优先级
+ #####普通网络请求 
+ 
 
 ```java
-     String urls="http://211.149.184.79:8080/we/car/getAllCarMessageForPage.do";
-     StringRequest resReques=new StringRequest(urls, Charsets.UTF_8);
-     resReques.addParam(new StringParamPart("page", "1"));
-     resReques.addParam(new StringParamPart("size", "2"));
-     resReques.addParam(new StringParamPart("index", "index"+1));
-     AsyncHttp.instance().stringRequest(resReques, new StringTest());
+  ##### 常规写法
+	String url=Contents.baseURL+"user/"+ machineid +"/getDutyList.do";
+        Log.e("PaiBanActivity",url);
+        AsyncHttpUtils.json(url, HttpMethod.Post, new HashMap<String, String>(), new JsonRequestLoadingCallback<PaiBanBean>(this) {
+            @Override
+            public void requestFail(Exception e, ResponseBody<String> request) {
+                e.printStackTrace();
+                showToast("网络出错,请重试");
+            }
+
+            @Override
+            public void requsetFinish() {
+
+            }
+
+            @Override
+            public void requsetStart() {
+
+            }
+
+            @Override
+            public void requestSuccess(PaiBanBean paiBanBean) {
+                Log.e("PaiBanActivity",paiBanBean.toString() );
+                int status = paiBanBean.getStatus();
+                if (status==1) {
+                    setPaiBan(paiBanBean);
+                }else {
+                    showToast("获取数据失败,请重试");
+                }
+            }
+        });
+		
+		
+		##### 个性写法
+		
+		###### 步骤一:定义相关的接口
+		
+		public interface PathBeanTest {
+
+        @JSONPOST("http://{ip}.26.106.136:8080/rest/common/user/login.do")
+        public CProxyRequester test(@PathParam("ip")String ip, @Param("username")String username, @Param("password")String passwork );
+
+
+        @GET("http://{ip}.26.106.136:8080/rest/common/allFactorys.do")
+        public CProxyRequester getAll(@PathParam("ip")String ip);
+
+		}
+		*其中，方法注解包含有：JSONPOST  POST  GET  DELETE  PUT  ....等 ，JSONPOST和POST无技术上差别，只是为了开发人员辨识清晰
+		*方法参数注解，包含两种，PathParam,Param ,PathParam表示匹配方法注解上的URL占位符，Param是请求的具体参数 ，注意：
+		 例如上面的  {ip}  方法中@PathParam("ip")String ip  名称要对应  否则,请求失败
+		
+		
+
+	###### 步骤二:通过代理实例化接口
+	    PathBeanTest  t=   ProxyCreater.creator(PathBeanTest.class);
+		
+	###### 步骤三:设置结果处理线程级别
+	    t.getAll("120").ResultMonitor(MIO.MainThread).Observation(new StringRequestResultCallBack<FactoryTestBean>() {
+                @Override
+                public void requestFail(Exception e, ResponseBody<String> request) {
+
+                }
+
+                @Override
+                public void requestSuccess(FactoryTestBean factoryTestBean) {
+                    Log.e("tag",factoryTestBean.getMsg()+"  "+factoryTestBean.getData().getList().size());
+                }
+
+                @Override
+                public void requsetFinish() {
+
+                }
+
+                @Override
+                public void requsetStart() {
+
+                }
+            });
+
+
+		######MIO.MainThread表示主线程，MIO.IOThread  表示IO线程
+	
+	
         
 ```
-  * 低优先级
 
-```java
-    String url="http://211.149.184.79:8080/we/car/getAllCarMessageForPage.do";
-    StringRequest resReques=new StringRequest(url, Charsets.UTF_8);
-    resReques.addParam(new StringParamPart("page", "1"));
-    resReques.addParam(new StringParamPart("size", "2"));
-    resReques.addParam(new StringParamPart("index", "index"+1));
-    AsyncHttp.instance().newRequest2(resReques, new StringTest());
-```
  
 #####文件的下载  
 
 ```java
+		写法一：
+		
         String url="http://scimg.jb51.net/allimg/160815/103-160Q509544OC.jpg";
  
        //必须设置存储路径
@@ -95,11 +162,82 @@
 
         resReques.setRequestMethod(HttpMethod.Get);
 
-        TaskHandler taskhandler= AsyncHttp.instance().newRequest2(resReques, new FileTest());
+        TaskHandler taskhandler= AsyncHttp.instance().download(resReques, new FileTest());
         //可以调用 taskhandler.stop()方法取消任务
 
         //FileTest 是 继承了 DownProgrossCallback<ResponseBody<T>>的 回掉接口，实现进度的监控，和结果的返回
     }
+	
+	
+	写法二：
+	
+	AsyncHttpUtils.download("http://pic1.sc.chinaz.com/files/pic/pic9/201611/apic24088.jpg", "/sdcard/test/", "file.jpg", new DownProgrossCallback<ResponseBody<File>>() {
+                    @Override
+                    public void download_current(long current, long total) {
+                        Log.e("tag", "current=" + current + " total=" + total);
+                        int pr = (int) (current * 100.0 / total);
+                        xiazai_pr.setProgress(pr);
+                    }
+
+                    @Override
+                    public void start() {
+                        Toast.makeText(getApplication(), "开始下载", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void finish() {
+                        Toast.makeText(getApplication(), "完成", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void success(ResponseBody<File> result) {
+                        Toast.makeText(getApplication(), "成功下载" + result.getResult().getPath(), Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    @Override
+                    public void fail(Exception e, ResponseBody<File> request) {
+                        e.printStackTrace();
+                        Toast.makeText(getApplication(), e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+	
+	写法三：
+	
+			public interface DownloadTest {
+				@DOWNLOAD("http://pic6.nipic.com/20100426/1687102_082357914928_2.jpg")
+				public CProxyRequester<File> down(@Param String path);
+			}
+
+		    DownloadTest downloadTest=ProxyCreater.creator(DownloadTest.class);
+			downloadTest.down("/sdcard/test/file2.jpg").ResultMonitor(MIO.MainThread).Observation(new DownProgrossCallback<ResponseBody<File>>() {
+						@Override
+						public void download_current(long current, long total) {
+
+						}
+
+						@Override
+						public void start() {
+
+						}
+
+						@Override
+						public void finish() {
+
+						}
+
+						@Override
+						public void success(ResponseBody<File> result) {
+
+						}
+
+						@Override
+						public void fail(Exception e, ResponseBody request) {
+
+						}
+					});
+
      
 ```
 
@@ -111,6 +249,7 @@
 
 ```java
  多线程下载文件：
+	    
         String urls="http://img.taopic.com/uploads/allimg/130711/318756-130G1222R317.jpg";
         String name=urls.substring(urls.lastIndexOf("/")+1,urls.length());
         String filepath="C:\\Users\\admin\\Pictures\\Camera Roll\\"+name;
@@ -162,18 +301,90 @@
 
 
 ```java
-
+   #####一般写法1
 
    String url="http://192.168.1.33:8080/StrutsDemo2/upload.action";
-   StringRequest resReques=new StringRequest(url, Charsets.UTF_8);
-   resReques.addParam(new FileParamPart("upload", new File("C:\\Users\\admin\\Pictures\\Camera Roll\           \img10.jpg"),Constents.TYPE_IMAGE));
-   //resReques.addParam(new FileParamPart("upload", new File("C:\\Users\\admin\\Pictures\\Camera Roll\         \ds.txt"),Constents.TYPE_TEXT));
-
+   UploadRequest resReques=new UploadRequest(url);
+   resReques.addParam(new FileParamPart("upload", new File("C:\\Users\\admin\\Pictures\\Camera Roll\\img10.jpg"),Constents.TYPE_IMAGE));
+  
    resReques.setRequestMethod(HttpMethod.Post);
    AsyncHttp.instance().newRequest2(resReques, new uploadTest());
    //uploadTest是 继承了   UploadProgrossCallback<ResponseBody<T>>的 回掉接口，实现进度的监控，和结果的返回
 
+   #####一般写法2
+   AsyncHttpUtils.upload("http://120.26.106.136:8080/rest/common/user/uploadAvatar.do", "/sdcard/test/test.jpg", "file", new UploadProgrossCallback<ResponseBody<String>>() {
+                     @Override
+                     public void upload_current(long current, long currentFileTotal, long total) {
+                         int pr = (int) (current * 100.0 / total);
+                         Log.e("tag", "current=" + current + " currentFileTotal= " + currentFileTotal + "  total=" + total);
+                         progressBar_shangchuan.setProgress(pr);
+                     }
+
+
+                     @Override
+                     public void start() {
+                         Toast.makeText(getApplication(), "开始上传", Toast.LENGTH_SHORT).show();
+                     }
+
+                     @Override
+                     public void finish() {
+                         Toast.makeText(getApplication(), "完成", Toast.LENGTH_SHORT).show();
+                     }
+
+                     @Override
+                     public void success(ResponseBody<String> result) {
+                         Log.e("tag", result.getResult());
+
+                     }
+
+                     @Override
+                     public void fail(Exception e, ResponseBody<String> request) {
+                         Toast.makeText(getApplication(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                         e.printStackTrace();
+                         Log.e("tag", request.getResult());
+
+                     }
+                 });
+   
+   #####个性写法
+   
+	public interface UploadTest {
+
+	@UPLOAD("http://120.26.106.136:8080/rest/common/user/uploadFile.do")
+	public CProxyRequester<UploadResultBean> upload(@Param("file") String filepath);
+	}
  
+	UploadTest uploadTest= ProxyCreater.creator(UploadTest.class);
+                uploadTest.upload("/sdcard/test/file.jpg").ResultMonitor(MIO.MainThread).Observation(new UploadRequestResultCallBack<UploadResultBean>(){
+
+                    @Override
+                    public void upload_current(long current, long currentFileTotal, long total) {
+                        int pr = (int) (current * 100.0 / total);
+                        Log.e("tag", "current=" + current + " currentFileTotal= " + currentFileTotal + "  total=" + total);
+                        progressBar_shangchuan.setProgress(pr);
+                    }
+
+                    @Override
+                    public void requestFail(Exception e, ResponseBody<String> request) {
+                            e.printStackTrace();
+                    }
+
+                    @Override
+                    public void requestSuccess(UploadResultBean uploadResultBean) {
+                        Log.e("tag",uploadResultBean.getMsg());
+                        Toast.makeText(getApplicationContext(),uploadResultBean.getData().getName(),Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void requsetFinish() {
+
+                    }
+
+                    @Override
+                    public void requsetStart() {
+
+                    }
+                });
 
 ```
 

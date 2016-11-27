@@ -43,6 +43,15 @@ public class uploadTest  extends  UploadProgrossCallback<ResponseBody<String>>{
           headerlist.add(new Header("connection", "Keep-Alive"));
           headerlist.add(new Header("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)"));
           headerlist.add(new Header("Accept-Charset", "ISO-8859-1"));
+          // .addHeader("version", "1.0")
+          headerlist.add(new Header("version", "1.0"));
+          headerlist.add(new Header("tokenId", "8FA24C888B39405FB46499C62E48A504"));
+          headerlist.add(new Header("token", "6EA4FCDF150D43EC83550938C7F59137"));
+
+          headerlist.add(new Header("appType", "1"));
+          headerlist.add(new Header("ostype", "1"));
+          headerlist.add(new Header("deviceId", "1231232342342341"));
+
           headerlist.add(new Header(Constents.CONTENT_TYPE, Constents.TYPE_FORM_DATA));
           requestConfig.setHeadList(headerlist);
           
@@ -50,14 +59,14 @@ public class uploadTest  extends  UploadProgrossCallback<ResponseBody<String>>{
           
           
          String url="http://192.168.1.33:8080/StrutsDemo2/upload.action";
-        // url="https://www.baidu.com/s?wd=java%20%20connection%20%20header&rsv_spt=1&rsv_iqid=0xeedc5e52000538bb&issp=1&f=3&rsv_bp=1&rsv_idx=2&ie=utf-8&rqlang=cn&tn=80035161_1_dg&rsv_enter=0&oq=java%20future&rsv_t=d401YWWNzGRFKoYJLxl5GAPzWANQ6pWrQw3%2Bbe2Pc34RTlRwcrZNfN7924ZBbvsDtHsItQ&inputT=11349&rsv_pq=e202081a0010d865&rsv_sug3=237&rsv_sug1=137&rsv_sug7=100&prefixsug=java%20%20connection%20%20header&rsp=0&rsv_sug4=12270";
+          url="http://120.26.106.136:8080/rest/common/user/uploadAvatar.do";
          
  		for(int i=0;i<1;i++){
  			 		
  			StringRequest resReques=new StringRequest(url, Charsets.UTF_8);
  		//	resReques.addParam(new StringParamPart("uploadContentType", "jpg"));
  		//	resReques.addParam(new StringParamPart("uploadFileName", "xxx"));
- 			resReques.addParam(new FileParamPart("upload", new File("C:\\Users\\admin\\Pictures\\Camera Roll\\img10.jpg"),Constents.TYPE_IMAGE));
+ 			resReques.addParam(new FileParamPart("file", new File("C:\\Users\\admin\\Pictures\\Camera Roll\\img10.jpg"),Constents.TYPE_IMAGE));
  			//resReques.addParam(new FileParamPart("upload", new File("C:\\Users\\admin\\Pictures\\Camera Roll\\ds.txt"),Constents.TYPE_TEXT));
 
  			resReques.setRequestMethod(HttpMethod.Post);
