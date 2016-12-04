@@ -19,7 +19,7 @@
 ####如何接入？
  
  ```java
-    compile 'com.ml.asynchttp:asynchttp-android:1.0.6'
+    compile 'com.ml.asynchttp:asynchttp-android:1.0.7'
  
  ```
 
