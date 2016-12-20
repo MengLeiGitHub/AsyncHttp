@@ -19,7 +19,7 @@
 ####如何接入？
  
  ```java
-    compile 'com.ml.asynchttp:asynchttp-android:1.0.7'
+    compile 'com.ml.asynchttp:asynchttp-android:1.1.0'
  
  ```
 
@@ -211,32 +211,34 @@
 			}
 
 		    DownloadTest downloadTest=ProxyCreater.creator(DownloadTest.class);
-			downloadTest.down("/sdcard/test/file2.jpg").ResultMonitor(MIO.MainThread).Observation(new DownProgrossCallback<ResponseBody<File>>() {
-						@Override
-						public void download_current(long current, long total) {
+			 downloadTest.down("/sdcard/test/game.apk").ResultMonitor(MIO.MainThread).Observation(new DownProgrossCallback<ResponseBody<File>>() {
+                    @Override
+                    public void download_current(long current, long total) {
+                      //  Log.e("tag", "current=" + current + " total=" + total);
+                        int pr = (int) (current * 100.0 / total);
+                        xiazai_pr.setProgress(pr);
+                    }
 
-						}
+                    @Override
+                    public void start() {
+                        xiazai_pr.setMax(100);
+                    }
 
-						@Override
-						public void start() {
+                    @Override
+                    public void finish() {
 
-						}
+                    }
 
-						@Override
-						public void finish() {
+                    @Override
+                    public void success(ResponseBody<File> result) {
+                        Log.e("tag",result.getResult().getAbsolutePath());
+                    }
 
-						}
+                    @Override
+                    public void fail(Exception e, ResponseBody request) {
 
-						@Override
-						public void success(ResponseBody<File> result) {
-
-						}
-
-						@Override
-						public void fail(Exception e, ResponseBody request) {
-
-						}
-					});
+                    }
+                });
 
      
 ```
