@@ -1,0 +1,4 @@
+E:/workSpace/asynchttpcode/AsyncHttpForAndroid/appupdate/.externalNativeBuild/cmake/externalNativeBuild/x86/CMakeFiles/bzip2.dir
+E:/workSpace/asynchttpcode/AsyncHttpForAndroid/appupdate/.externalNativeBuild/cmake/externalNativeBuild/x86/CMakeFiles/rebuild_cache.dir
+E:/workSpace/asynchttpcode/AsyncHttpForAndroid/appupdate/.externalNativeBuild/cmake/externalNativeBuild/x86/CMakeFiles/com_async_apkupdate_utils_BsdiffUtils.dir
+E:/workSpace/asynchttpcode/AsyncHttpForAndroid/appupdate/.externalNativeBuild/cmake/externalNativeBuild/x86/CMakeFiles/edit_cache.dir

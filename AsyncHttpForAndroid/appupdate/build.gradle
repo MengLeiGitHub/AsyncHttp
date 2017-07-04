@@ -1,0 +1,122 @@
+apply plugin: 'com.android.library'
+
+apply plugin: 'com.jfrog.bintray'//添加bintray插件
+apply plugin: 'com.github.dcendents.android-maven'
+
+group = 'com.ml.apkupadte'
+
+version='1.2.0'
+
+
+
+task generateSourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier 'sources'
+}
+
+
+artifacts {
+    // archives generateJavaDocsJar
+    archives generateSourcesJar
+}
+
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    pkg {
+        repo = 'Maven'
+        name = 'ApkUpdateTool'
+
+        version {
+            name = '1.2.0-release'
+            desc ="Tools for automatic detection of Android Applications."
+            vcsTag = '1.2.0'
+        }
+
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/MengLeiGitHub/ApkUpdateTool.git'
+        websiteUrl = 'https://github.com/MengLeiGitHub/ApkUpdateTool'
+        publish = true
+    }
+
+    configurations = ['archives']
+
+}
+
+
+
+
+
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion '25.0.0'
+
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+       /* ndk {
+            //生成的so名字
+            moduleName "com_async_apkupdate_utils_BsdiffUtils"
+            ldLibs "jni/bzip2/bzlib.c"
+            ldLibs "jni/bzip2/crctable.c"
+            ldLibs "jni/bzip2/compress.c"
+            ldLibs "jni/bzip2/decompress.c"
+            ldLibs "jni/bzip2/randtable.c"
+            ldLibs "jni/bzip2/blocksort.c"
+            ldLibs "jni/bzip2/huffman.c"
+
+            abiFilters "armeabi", "armeabi-v7a", "x86"
+        }
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }*/
+
+
+    }
+
+    sourceSets.main {
+        jni.srcDirs = []
+    }
+    task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
+        commandLine 'D:\\as_sdk\\ndk-bundle\\ndk-build.cmd',//这里本地ndk的路径
+                'NDK_PROJECT_PATH=build/intermediates/ndk',
+                'NDK_LIBS_OUT=src/main/jniLibs',
+                'APP_BUILD_SCRIPT=src/main/jni/Android.mk'
+    }
+    tasks.withType(JavaCompile){
+        compileTask->compileTask.dependsOn ndkBuild
+    }
+
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+       /* externalNativeBuild {
+            cmake {
+                path "CMakeLists.txt"
+            }
+        }*/
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+ //   testCompile 'junit:junit:4.12'
+     compile 'com.ml.asynchttp:asynchttp-android:1.2.+'
+    //   compile 'com.ml.asynchttp:asynchttp-android:1.1.7'
+
+}

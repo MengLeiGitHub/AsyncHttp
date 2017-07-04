@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+<LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="3dp"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:id="@+id/imageview"
+        android:layout_width="70dp"
+        android:layout_height="100dp"
+         android:layout_marginLeft="10dp"
+         android:layout_gravity="center_vertical"
+        android:layout_marginRight="10dp"
+        android:src="@mipmap/ic_launcher" />
+
+    <LinearLayout
+        android:layout_width="1px"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/carName"
+                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="大众帕萨特" />
+
+            <TextView
+                android:id="@+id/yanshi"
+                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:text="(延迟出价)" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/carMoney"
+                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:alpha="0.7"
+                android:text="￥8000" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/carRegisterTime"
+             android:layout_width="wrap_content"
+            android:layout_marginTop="3dp"
+            android:layout_height="wrap_content"
+            android:alpha="0.5"
+            android:text="初次登记：15/07/30" />
+
+        <TextView
+            android:id="@+id/carSellTime"
+             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:maxLines="2"
+             android:alpha="0.5"
+             android:layout_marginBottom="5dp"
+            android:text="15/07/30-15/25/2015" />
+    </LinearLayout>
+
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center_vertical"
+    android:layout_marginRight="10dp"
+     android:gravity="center"
+     android:focusable="false"
+    android:id="@+id/collect_Btn"
+    android:orientation="vertical" >
+
+                <RadioButton
+                    android:id="@+id/collect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:checked="false"
+                    android:background="@mipmap/ic_launcher"
+                    android:button="@null" />
+
+                <TextView
+                    android:id="@+id/collectText"
+                    android:layout_width="wrap_content"
+                    android:clickable="false"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:text="收藏" />
+            </LinearLayout>
+</LinearLayout>
+</LinearLayout>

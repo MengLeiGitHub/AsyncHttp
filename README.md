@@ -39,7 +39,7 @@
                 return baserequest;
             }
         }, new  ResponseInterceptorActionInterface(){
-		);
+    	);
         LogUtils.setDebug(true);
  
  ```
@@ -301,10 +301,9 @@
 ######上传 文件 (单线程)
 
 
-
-```java
+ 
    #####一般写法1
-	
+	<pre><code>
    String url="http://192.168.1.33:8080/StrutsDemo2/upload.action";
    UploadRequest resReques=new UploadRequest(url);
    resReques.addParam(new FileParamPart("upload", new File("C:\\Users\\admin\\Pictures\\Camera Roll\\img10.jpg"),Constents.TYPE_IMAGE));
@@ -314,7 +313,7 @@
    //uploadTest是 继承了   UploadProgrossCallback<ResponseBody<T>>的 回掉接口，实现进度的监控，和结果的返回
 
    #####一般写法2
-   <pre><code>
+   
    AsyncHttpUtils.upload("http://120.26.106.136:8080/rest/common/user/uploadAvatar.do", "/sdcard/test/test.jpg", "file", new UploadProgrossCallback<ResponseBody<String>>() {
                      @Override
                      public void upload_current(long current, long currentFileTotal, long total) {
@@ -348,7 +347,7 @@
 
                      }
                  });
-				 </code></pre>
+	  </code></pre>
    
    #####个性写法
    
@@ -405,16 +404,7 @@
 -keep interface com.async.**
 -keepclassmembers interface com.async.** { *; }
 
- # Gson
- -keepattributes Signature
- -keepattributes *Annotation*
- -keep class sun.misc.Unsafe { *; }
- -keep class com.google.gson.stream.** { *; }
- # 使用Gson时需要配置Gson的解析对象及变量都不混淆。不然Gson会找不到变量。
- # 将下面替换成自己的实体类
- -keep class com.example.bean.** { *; }
-
-
+ 
 </code></pre>
 
 

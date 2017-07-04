@@ -1,0 +1,82 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.jfrog.bintray'//添加bintray插件
+apply plugin: 'com.github.dcendents.android-maven'
+
+group = 'com.ml.asyncpool'
+
+version='1.0.5'
+
+task generateSourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier 'sources'
+}
+
+/*task generateJavadocs(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs //source指定了源码位置
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}*/
+
+//这里dependsOn意为仅当generateJavadocs完成后才开始本task，和ant脚本也是对应的。
+/*task generateJavadocsJar(type: Jar, dependsOn: generateJavadocs) {
+    from generateJavadocs.destinationDir
+    classifier 'javadoc'
+}*/
+artifacts {
+    // archives generateJavaDocsJar
+    archives generateSourcesJar
+}
+
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    pkg {
+        repo = 'Maven'
+        name = 'AsyncPool'
+
+        version {
+            name = '1.0.5-release'
+            desc ="The framework realizes the decoupling of task and data return. At the same time, in order to achieve a better scalability, in the implementation of the concept of the introduction of the filter structure. User can customize the filter. In this framework, the user can customize the implementation of more business based on multi thread. Only need to implement the framework inside the task interface and the results of the observation interface can be."
+            vcsTag = '1.0.5'
+        }
+
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/MengLeiGitHub/AsyncPool.git'
+        websiteUrl = 'https://github.com/MengLeiGitHub/AsyncPool'
+        publish = true
+    }
+
+    configurations = ['archives']
+
+}
+
+
+
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "24.0.2"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+
+}
