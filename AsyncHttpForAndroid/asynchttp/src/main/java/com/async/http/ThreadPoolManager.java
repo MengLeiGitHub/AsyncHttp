@@ -129,16 +129,23 @@ public final class ThreadPoolManager {
         return !mTaskQueue.isEmpty();
     }
 
+
+
+
+    public long   getTaskOrder(){
+        return atomicLong.addAndGet(1);
+    }
+
     /*
      * 向线程池中添加任务方法
      */
-    public long addExecuteTask(Runnable task) {
+    public void addExecuteTask(Runnable task) {
         if (task != null) {
 
             mThreadPool.execute(task);
-            return atomicLong.addAndGet(1);
+           // return atomicLong.addAndGet(1);
         }
-        return -1;
+       // return -1;
     }
 
     public boolean  CancleTask(long tid){

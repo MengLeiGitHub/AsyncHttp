@@ -31,7 +31,6 @@ import com.async.http.utils.DeleteDirectory;
 import com.async.http.utils.LogUtils;
 import com.async.http.utils.StringUtils;
 
-import com.alibaba.fastjson.JSON;
 
 
 import java.io.BufferedReader;
@@ -58,7 +57,7 @@ public class AsyncHttp {
     ResponseInterceptor2 responseInterceptor;
     HashMap<String, Long> downloadRequestCache;
     //ExecutorService cachedThreadPool;
-
+    JsonConvertInterface jsonConvertInterface;
     private RequestConfig config;
 
     private HashMap<String, HttpCallBack<ResponseBody>> listcallback = null;
@@ -95,6 +94,14 @@ public class AsyncHttp {
                     .setRequestInterceptor2(this.requestInterceptor);
 
         return this;
+    }
+
+    public void setJsonConvertInterface(JsonConvertInterface jsonConvertInterface) {
+        this.jsonConvertInterface = jsonConvertInterface;
+    }
+
+    public JsonConvertInterface getJsonConvertInterface() {
+        return jsonConvertInterface;
     }
 
     public RequestInterceptor2 getRequestInterceptor() {
@@ -148,8 +155,8 @@ public class AsyncHttp {
         // 提交请求
 /*        int mid = SyncPoolExecutor.execute(task, resultObsever);
         task.setCurrt(mid);*/
-         long mid= ThreadPoolManager.newInstance().addExecuteTask(task);
-        task.setCurrt(mid);
+         long mid= ThreadPoolManager.newInstance().getTaskOrder();
+         task.setCurrt(mid);
         // long time1=System.currentTimeMillis();
         // System.out.println("================== ======================time2="+time1);
         return task;
@@ -326,7 +333,7 @@ public class AsyncHttp {
                         recordEntity.getRecordPath(), "rw");
                 randomAccessFile.seek(0);
 
-                randomAccessFile.write(JSON.toJSON(recordEntity).toString()
+                randomAccessFile.write( getJsonConvertInterface().serialize(recordEntity).toString()
                         .getBytes("utf-8"));
                 randomAccessFile.close();
             } catch (Exception e) {
@@ -347,6 +354,23 @@ public class AsyncHttp {
                 for (TaskHandler t : taskhandlerlist) {
                     synchronized (t) {
                         t.stop();
+                        try {
+                            t.wait();
+                        } catch (InterruptedException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        t.notifyAll();
+                    }
+
+                }
+            }
+
+            @Override
+            public void excute() {
+                for (TaskHandler t : taskhandlerlist) {
+                    synchronized (t) {
+                        t.excute();
                         try {
                             t.wait();
                         } catch (InterruptedException e) {
@@ -392,7 +416,7 @@ public class AsyncHttp {
                         new FileInputStream(file), "utf-8");// 考虑到编码格式
                 fileReader = new BufferedReader(read);
                 String re = fileReader.readLine();
-                RecordEntity recordEntity = JSON.parseObject(re,
+                RecordEntity recordEntity = getJsonConvertInterface().deserialize(re,
                         RecordEntity.class);
 
                 totalNODown += (recordEntity.getEndTag()
@@ -464,6 +488,24 @@ public class AsyncHttp {
                     synchronized (t) {
 
                         t.stop();
+                        try {
+                            t.wait();
+                        } catch (InterruptedException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        t.notifyAll();
+                    }
+
+                }
+            }
+
+            @Override
+            public void excute() {
+                for (TaskHandler t : taskhandlerlist) {
+                    synchronized (t) {
+
+                        t.excute();
                         try {
                             t.wait();
                         } catch (InterruptedException e) {

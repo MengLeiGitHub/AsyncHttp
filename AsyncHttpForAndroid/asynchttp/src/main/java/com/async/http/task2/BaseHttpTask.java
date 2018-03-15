@@ -2,6 +2,7 @@ package com.async.http.task2;
 
  
  
+import com.async.http.ThreadPoolManager;
 import com.async.http.client.AsyncHttpClient;
 import com.async.http.Interceptor2.RequestInterceptor2;
 import com.async.http.entity.ResponseBody;
@@ -155,5 +156,9 @@ public class BaseHttpTask  implements TaskHandler,Runnable{
 
 	public  void setResultObsever(BaseResultInterceptorObsever resultObsever) {
 		this.resultObsever = resultObsever;
+	}
+	@Override
+	public void excute(){
+		ThreadPoolManager.newInstance().addExecuteTask(this);
 	}
 }

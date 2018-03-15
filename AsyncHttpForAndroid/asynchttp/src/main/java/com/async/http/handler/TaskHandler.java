@@ -12,5 +12,5 @@ package com.async.http.handler;
 public  interface TaskHandler  {
 
 	public void  stop();
-
+	public void  excute();
 }

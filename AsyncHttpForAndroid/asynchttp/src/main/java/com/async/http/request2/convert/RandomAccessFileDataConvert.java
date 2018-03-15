@@ -1,6 +1,6 @@
 package com.async.http.request2.convert;
 
-import com.alibaba.fastjson.JSON;
+import com.async.http.AsyncHttp;
 import com.async.http.callback.DownProgrossCallback;
 import com.async.http.callback.HttpCallBack;
 import com.async.http.exception.CancledOrInterruptedExcetion;
@@ -60,7 +60,8 @@ public class RandomAccessFileDataConvert extends
 				current += b;
 				recordEntity.setCurrent(current);
 				randomfileJILu.seek(0);
-				randomfileJILu.write(JSON.toJSON(recordEntity).toString().getBytes(
+				String  recordEntityJson= AsyncHttp.instance().getJsonConvertInterface().serialize(recordEntity);
+				randomfileJILu.write(recordEntityJson.getBytes(
 						"utf-8"));
 
 			}

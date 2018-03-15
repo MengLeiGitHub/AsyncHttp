@@ -5,7 +5,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 
 group = 'com.ml.asynchttp'
 
-version='1.2.0'
+version='1.2.1'
 
 task generateSourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
@@ -40,9 +40,9 @@ bintray {
         name = 'AsyncHttp'
 
         version {
-            name = '1.2.0-release'
+            name = '1.2.1-release'
             desc ="HTTP based on the AsyncPool thread pool to achieve the request, support post and get two in the request, the request to achieve the task and the results of asynchronous access"
-            vcsTag = '1.2.0'
+            vcsTag = '1.2.1'
         }
 
         licenses = ['Apache-2.0']
@@ -60,7 +60,7 @@ bintray {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "24.0.2"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         minSdkVersion 15
@@ -79,7 +79,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile 'com.alibaba:fastjson:1.2.24'
+   // compile 'com.alibaba:fastjson:1.2.24'
 
 }
 

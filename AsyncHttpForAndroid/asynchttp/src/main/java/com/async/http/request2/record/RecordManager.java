@@ -1,6 +1,6 @@
 package com.async.http.request2.record;
 
-import com.alibaba.fastjson.JSON;
+import com.async.http.AsyncHttp;
 import com.async.http.request2.download;
 
 import java.io.File;
@@ -85,7 +85,7 @@ public class RecordManager implements RecordManagerHandler {
 									randomAccessFile = new RandomAccessFile(path,
 											"rw");
 
-									String r = JSON.toJSONString(recordEntity);
+									String r =AsyncHttp.instance().getJsonConvertInterface().serialize(recordEntity);
 
 									randomAccessFile.write(r.getBytes());
 
@@ -193,7 +193,7 @@ public class RecordManager implements RecordManagerHandler {
 
 				String bean=randomAccessFile.readLine();
 
-				RecordEntity r=JSON.parseObject(bean,RecordEntity.class);
+				RecordEntity r=AsyncHttp.instance().getJsonConvertInterface().deserialize(bean,RecordEntity.class);
 				download d=new download(r.getFilePath());
 				d.setRecordEntity(r);
 
